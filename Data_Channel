@@ -1,0 +1,34 @@
+function doGet(e) {
+  Logger.log(JSON.stringify(e));
+
+  if (typeof e.parameter !== 'undefined') {
+    var sheet_id = '14DWuMhe9oNd3eSpI0yFYz3-3y5u5hLnBYShZ_ZVHLCE';
+    var sheet = SpreadsheetApp.openById(sheet_id).getActiveSheet();
+    var newRow = sheet.getLastRow() + 1;
+    var rowData = [];
+    rowData[0] = new Date();
+
+    for (var param in e.parameter) {
+      Logger.log('In for loop, param=' + param);
+      var value = stripQuotes(e.parameter[param]);
+      Logger.log(param + ' ' + e.parameter[param]);
+
+      switch (param) {
+        case 'Continuity Tester':
+          rowData[1] = value;
+          break;
+        // Add additional cases here if needed
+        default:
+          break;
+      }
+    }
+
+    Logger.log(JSON.stringify(rowData));
+    var newRange = sheet.getRange(newRow, 1, 1, rowData.length);
+    newRange.setValues([rowData]);
+  }
+}
+
+function stripQuotes(value) {
+  return value.replace(/^["']|["']$/g, "");
+}
